@@ -1,0 +1,17 @@
+a(age, [tier_3,tier_1,tier_4,tier_2]).
+a(height, [tier_3,tier_2,tier_1,tier_4]).
+a(weight, [tier_4,tier_3,tier_1,tier_5,tier_2]).
+a(gp, [tier_3,tier_4,tier_2,tier_1,tier_5]).
+a(min, [tier_3,tier_4,tier_2,tier_1]).
+a(usg_pct, [tier_4,tier_2,tier_5,tier_1,tier_3]).
+a(pace, [tier_3,tier_4,tier_2,tier_1]).
+a(poss, [tier_7,tier_9,tier_4,tier_8,tier_5,tier_6,tier_1,tier_3,tier_2,tier_10]).
+a(fga_pg, [tier_4,tier_3,tier_5,tier_2,tier_1]).
+a(drives, [tier_6,tier_7,tier_9,tier_10,tier_4,tier_5,tier_8,tier_1,tier_3,tier_2]).
+a(dist_miles, [tier_4,tier_5,tier_3,tier_1,tier_2]).
+a(avg_speed, [tier_1,tier_4,tier_2,tier_3]).
+a(pull_up_fga, [tier_6,tier_5,tier_10,tier_3,tier_9,tier_7,tier_8,tier_2,tier_4,tier_1]).
+a(avg_sec_per_touch, [tier_4,tier_2,tier_5,tier_3,tier_1]).
+a(avg_drib_per_touch, [tier_6,tier_3,tier_7,tier_5,tier_4,tier_1,tier_8,tier_2]).
+a(post_touches, [tier_9,tier_3,tier_8,tier_5,tier_6,tier_7,tier_10]).
+a(paint_touches, [tier_10,tier_5,tier_3,tier_9,tier_4,tier_8,tier_7,tier_1,tier_2,tier_6]).
