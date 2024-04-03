@@ -177,8 +177,8 @@ attributi_dict = {
     'avg_speed': 4,
     'pull_up_fga': 10,
     'avg_sec_per_touch': 5,
-    'avg_drib_per_touch': 8,
-    'post_touches': 10,
+    'avg_drib_per_touch': 10,
+    'post_touches': 4,
     'paint_touches': 10
 }
 

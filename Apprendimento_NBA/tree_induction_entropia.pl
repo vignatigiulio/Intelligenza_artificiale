@@ -1,37 +1,47 @@
-% programma per apprendimento regole su infortuni NBA
-
 :- ensure_loaded(attributi).
 :- ensure_loaded(training_set).
 :- ensure_loaded(test_set).
-
 :- op(300, xfx, <==).
 
-% cambia percorso con quello della workspace
-file_output('/home/giulio/Documents/Intelligenza_artificiale/albero.txt').
+% Programma Prolog di apprendimento automatico per la classificazione di
+% infortuni dei giocatori in un campionato di basket.
+% Con il predicato lancia_apprendi(Classe) (Classe = sano/infortunato),
+% viene lanciato l'apprendimento relativo alla classe specificata.
+% Una volta concluso l'apprendimento, con il predicato
+% classifica_oggetto e' possibile far classificare al programma
+% l'oggetto specificato.
+% Inoltre, con il predicato lancia_induzione, il programma calcola
+% l'albero di decisione con il criterio dell'entropia.
+% Con il predicato stampa_matrice_di_confusione e' possibile
+% visualizzare le prestazioni dell'albero indotto.
 
-% per lanciare l'apprendimento
+% Cambiare percorso con quello della propria workspace
+file_output('D:/Universita/Corsi magistrale/Prolog/Apprendimento NBA/albero.pl').
+
+
+% Predicato per lanciare l'apprendimento
 lancia_apprendi(Classe) :-
     file_output(NomeFile),
     tell(NomeFile),
     apprendi(Classe),
     told.
 
-lancia_induzione(Albero) :-
-    file_output(NomeFile),
-    induce_albero(Albero),
-    tell(NomeFile),
-    write(Albero),
-    told,
-    assert(alb(Albero)).
-
-% ======================================================================
-% Apprendimento
-
+% Predicato per lanciare la classificazione di un oggetto
 classifica_oggetto(Oggetto,Classe) :-
 	Classe <== Descrizione,
 	member(CongiunzioneAttributi,Descrizione),
 	soddisfa(Oggetto,CongiunzioneAttributi).
 
+% Predicato per lanciare l'induzione dell'albero di decisione con il
+% criterio dell'entropia
+lancia_induzione(Albero) :-
+    file_output(NomeFile),
+    induce_albero(Albero),
+    tell(NomeFile),
+    write(Albero),
+    write('.'),
+    told,
+    assert(alb(Albero)).
 
 apprendi(Classe) :-
     findall(e(C,O),e(C,O), Esempi),      % raccoglie  gli Esempi
@@ -42,18 +52,16 @@ apprendi(Classe) :-
 
 % apprendi(Esempi,Classe,Descrizione)
 % Descrizione copre esattamente gli esempi di Classe nella lista Esempi
-
 apprendi(Esempi,Classe,[]) :-
-    \+ member(e(Classe,_),Esempi). % non ci sono pi  esempi da coprire
+    \+ member(e(Classe,_),Esempi). % non ci sono piu' esempi da coprire
 apprendi(Esempi,Classe,[Congie|Congi]) :-
     apprendi_cong(Esempi,Classe,Congie),
     rimuovi(Esempi,Congie,RestoEsempi), % rimuove gli esempi utilizzati
     apprendi(RestoEsempi,Classe,Congi). % copre gli esempi restanti
 
 % apprendi_cong(Esempi,Classe,Cong)
-% Cong   una lista di coppie attributo-valore soddisfatti da alcuni
+% Cong e' una lista di coppie attributo-valore soddisfatti da alcuni
 % esempi di Classe e da nessun esempio di un'altra classe
-
 apprendi_cong(Esempi,Classe,[]) :-
     \+ (member(e(ClasseX,_),Esempi), % non ci sono esempi di altre classi
     ClasseX \== Classe),!.
@@ -86,7 +94,7 @@ adatto(AttVal,Esempi,Classe) :-
     \+ soddisfa(OggX,[AttVal]),!. % esempio negativo che non matcha
 
 soddisfa(Oggetto,Congiunzione) :-
-    \+ (member(Att=Valx,Congiunzione), % soddisfa ha successo se non   vero che
+    \+ (member(Att=Valx,Congiunzione), % soddisfa ha successo se non � vero che
         member(Att=Valy,Oggetto),      % esiste all'interno di congiunzione un
         Valx \== Valy).                % valore Valx associato ad Att che sia
                                        % diverso dal valore Valy associato ad Att
@@ -94,7 +102,7 @@ soddisfa(Oggetto,Congiunzione) :-
 
 best([AttVal/_],AttVal).
 best([AV0/S0,AV1/S1|AVSlist],AttVal) :-
-    S1 > S0,!, % AV1   meglio di AV0
+    S1 > S0,!, % AV1 � meglio di AV0
     best([AV1/S1|AVSlist],AttVal) % if S1 > S0
     ;
     best([AV0/S0|AVSlist],AttVal). % else if S0 > S1
@@ -124,8 +132,8 @@ writelist([X|L]) :-
 	tab(2), writeq(X), nl,
 	writelist(L).
 
-% ====================================
-%
+% ================Induzione====================
+
 :- dynamic alb/1.
 
 induce_albero( Albero ) :-
@@ -169,7 +177,7 @@ sceglie_attributo( Attributi, Esempi, MigliorAttributo )  :-
 	      [_/MigliorAttributo|_] ).
 
 % disuguaglianza(+Esempi, +Attributo, -Dis):
-% Dis   la disuguaglianza combinata dei sottoinsiemi degli esempi
+% Dis � la disuguaglianza combinata dei sottoinsiemi degli esempi
 % partizionati dai valori dell'Attributo
 disuguaglianza( Esempi, Attributo, Dis) :-
 	a( Attributo, AttVals),
@@ -254,16 +262,16 @@ mostratutto([V:T|C],I) :-
 %  t(-Att,-Valori): Albero di Decisione
 % presuppone sia stata effettuata l'induzione dell'Albero di Decisione
 
-classifica(Oggetto,nc,t(Att,Valori)) :- % dato t(+Att,+Valori), Oggetto è della Classe
-	member(Att=Val,Oggetto),  % se Att=Val è elemento della lista Oggetto
-        member(Val:null,Valori). % e Val:null è in Valori
+classifica(Oggetto,nc,t(Att,Valori)) :- % dato t(+Att,+Valori), Oggetto e' della Classe
+	member(Att=Val,Oggetto),  % se Att=Val e' elemento della lista Oggetto
+        member(Val:null,Valori). % e Val:null e' in Valori
 
-classifica(Oggetto,Classe,t(Att,Valori)) :- % dato t(+Att,+Valori), Oggetto è della Classe
-	member(Att=Val,Oggetto),  % se Att=Val è elemento della lista Oggetto
-        member(Val:l(Classe),Valori). % e Val:l(Classe) è in Valori
+classifica(Oggetto,Classe,t(Att,Valori)) :- % dato t(+Att,+Valori), Oggetto e' della Classe
+	member(Att=Val,Oggetto),  % se Att=Val e' elemento della lista Oggetto
+        member(Val:l(Classe),Valori). % e Val:l(Classe) e' in Valori
 
 classifica(Oggetto,Classe,t(Att,Valori)) :-
-	member(Att=Val,Oggetto),  % se Att=Val è elemento della lista Oggetto
+	member(Att=Val,Oggetto),  % se Att=Val e' elemento della lista Oggetto
 	delete(Oggetto,Att=Val,Resto),
 	member(Val:t(AttFiglio,ValoriFiglio),Valori),
 	classifica(Resto,Classe,t(AttFiglio,ValoriFiglio)).
@@ -274,14 +282,16 @@ stampa_matrice_di_confusione :-
 	findall(Classe/Oggetto,s(Classe,Oggetto),TestSet),
 	length(TestSet,N),
 	valuta(Albero,TestSet,VN,0,VP,0,FN,0,FP,0,NC,0),
-	A is (VP + VN) / (N - NC), % Accuratezza
+	A is (VP + VN) / (VP+VN+FP+FN), % Accuratezza
 	E is 1 - A,		   % Errore
+        P is VP / (VP + FN), % Precisione
 	write('Test effettuati :'),  writeln(N),
 	write('Test non classificati :'),  writeln(NC),
-	write('Veri sani  '), write(VN), write('   Falsi invalidi '), writeln(FP),
-	write('Falsi sani '), write(FN), write('   Veri invalidi  '), writeln(VP),
+	write('Veri sani  '), write(VN), write('   Falsi infortuni '), writeln(FP),
+	write('Falsi sani '), write(FN), write('   Veri infortuni  '), writeln(VP),
 	write('Accuratezza: '), writeln(A),
-	write('Errore: '), writeln(E).
+	write('Errore: '), writeln(E),
+        write('Precisione: '), writeln(P).
 
 valuta(_,[],VN,VN,VP,VP,FN,FN,FP,FP,NC,NC).            % testset vuoto -> valutazioni finali
 valuta(Albero,[sano/Oggetto|Coda],VN,VNA,VP,VPA,FN,FNA,FP,FPA,NC,NCA) :-
