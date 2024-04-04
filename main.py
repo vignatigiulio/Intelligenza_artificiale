@@ -1,12 +1,13 @@
 from pyswip import Prolog
 from pyswip import Functor
+from tkinter import ttk
 import tkinter as tk
 import time
 import numpy as np
 import pandas as pd
 import os
 FOLDER_PATH = "/home/giulio/Documents/Intelligenza_artificiale/"
-
+FILE_DA_CONSULTARE = "tree_induction_entropia.pl"
 def cambiaPercorso(nome_file):
     with open(os.getcwd() + '/Apprendimento_NBA/' + nome_file, 'r') as file, open(os.getcwd() + '/Apprendimento_NBA/' + nome_file + '.tmp', 'w') as file_temp:
     # Itera ogni riga del file
@@ -19,6 +20,12 @@ def cambiaPercorso(nome_file):
 
     os.remove(os.getcwd()+'/Apprendimento_NBA/'+nome_file)  # Rimuove il file originale
     os.rename(os.getcwd()+'/Apprendimento_NBA/'+nome_file + '.tmp', os.getcwd()+'/Apprendimento_NBA/'+nome_file) #Rinomina
+
+def on_combobox_change(event):
+    selected_value = combobox.get()
+    if selected_value == "Gini": FILE_DA_CONSULTARE = "tree_induction_gini.pl"
+    else: FILE_DA_CONSULTARE = "tree_induction_entropia.pl"
+    print(f"Hai selezionato: {FILE_DA_CONSULTARE}")
 
 def percentile(array, num):
     data = np.array(array)
@@ -124,8 +131,6 @@ def interroga():
     prolog = Prolog()
     #Determino i valori inseriti dall'utente
     values = [entry.get() for entry in entry_widgets]
-    #Indico il file da consultare
-    FILE_DA_CONSULTARE = "tree_induction_gini.pl"
     #Carico il file da consultare
     prolog.consult(FOLDER_PATH+"Apprendimento_NBA/"+FILE_DA_CONSULTARE)
     #Costruisco la query ricavandomi il tier
@@ -173,7 +178,6 @@ labels = ["Età", "Altezza", "Peso", "Partite giocate", "Minuti a partita",
           "Media dribbling per tocco", "Tocchi spalle a canestro",
           "Tocchi nel pitturato"]
 
-
 entry_widgets = []
 
 
@@ -199,7 +203,6 @@ attributi_dict = {
 
 for i, label_text in enumerate(labels):
     label = tk.Label(root, text=label_text, font=("Arial", 12))
-
     label.grid(row=i, column=0, padx=10, pady=5, sticky="w")
     entry = tk.Entry(root, width=10, font=("Arial", 12))
     entry.grid(row=i, column=1, padx=10, pady=5)
@@ -207,5 +210,12 @@ for i, label_text in enumerate(labels):
 
 button = tk.Button(root, text="Costruisci la query", command=interroga, font=("Arial", 12))
 button.grid(row=len(labels), column=1, pady=10)
+
+label=tk.Label(root, text="Metodo di induzione:", font=("Arial",12))
+label.grid(padx=5, pady=5, sticky="w")
+combobox = ttk.Combobox(root, values=["Entropia", "Gini"])
+combobox.current(0)
+combobox.bind("<<ComboboxSelected>>", on_combobox_change)
+combobox.grid(column=0, padx=5, pady=5, sticky="w")
 
 root.mainloop()
