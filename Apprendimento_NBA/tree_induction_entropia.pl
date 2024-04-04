@@ -16,7 +16,7 @@
 % visualizzare le prestazioni dell'albero indotto.
 
 % Cambiare percorso con quello della propria workspace
-file_output('D:/Universita/Corsi magistrale/Prolog/Apprendimento NBA/albero.pl').
+file_output('/home/giulio/Documents/Intelligenza_artificiale/Apprendimento_NBA/albero.pl').
 
 
 % Predicato per lanciare l'apprendimento

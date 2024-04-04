@@ -16,7 +16,7 @@
 % visualizzare le prestazioni dell'albero indotto.
 
 % Cambiare percorso con quello della propria workspace
-file_output('D:/Universita/Corsi magistrale/Prolog/Apprendimento NBA/albero.pl').
+file_output('/home/giulio/Documents/Intelligenza_artificiale/Apprendimento_NBA/albero.pl').
 
 
 % Predicato per lanciare l'apprendimento
@@ -210,8 +210,8 @@ somma_pesata( Esempi, Att, [Val|Valori], SommaParziale, Somma) :-
 % gini(ListaProbabilit√†, IndiceGini)
 %    IndiceGini = SOMMATORIA Pi*Pj per tutti i,j tali per cui i\=j
 %    E' equivalente a 1 - SOMMATORIA Pi*Pi su tutti gli i
-gini(ListaProbabilita†,Gini) :-
-	somma_quadrati(ListaProbabilita†,0,SommaQuadrati),
+gini(ListaProbabilita,Gini) :-
+	somma_quadrati(ListaProbabilita,0,SommaQuadrati),
 	Gini is 1-SommaQuadrati.
 somma_quadrati([],S,S).
 somma_quadrati([P|Ps],PartS,S)  :-

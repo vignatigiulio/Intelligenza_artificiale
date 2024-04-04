@@ -4,8 +4,21 @@ import tkinter as tk
 import time
 import numpy as np
 import pandas as pd
-
+import os
 FOLDER_PATH = "/home/giulio/Documents/Intelligenza_artificiale/"
+
+def cambiaPercorso(nome_file):
+    with open(os.getcwd() + '/Apprendimento_NBA/' + nome_file, 'r') as file, open(os.getcwd() + '/Apprendimento_NBA/' + nome_file + '.tmp', 'w') as file_temp:
+    # Itera ogni riga del file
+        for line in file:
+        # Controlla se la riga inizia con 'file_output' e sostituiscila se necessario
+            if line.startswith('file_output'):
+                line = "file_output('"+os.getcwd() + "/Apprendimento_NBA/albero.pl').\n"
+        # Scrive la riga nel file temporaneo
+            file_temp.write(line)
+
+    os.remove(os.getcwd()+'/Apprendimento_NBA/'+nome_file)  # Rimuove il file originale
+    os.rename(os.getcwd()+'/Apprendimento_NBA/'+nome_file + '.tmp', os.getcwd()+'/Apprendimento_NBA/'+nome_file) #Rinomina
 
 def percentile(array, num):
     data = np.array(array)
@@ -106,11 +119,13 @@ def format_result(result):
 
 
 def interroga():
+    cambiaPercorso('tree_induction_entropia.pl')
+    cambiaPercorso('tree_induction_gini.pl')
     prolog = Prolog()
     #Determino i valori inseriti dall'utente
     values = [entry.get() for entry in entry_widgets]
     #Indico il file da consultare
-    FILE_DA_CONSULTARE = "tree_induction_entropia.pl"
+    FILE_DA_CONSULTARE = "tree_induction_gini.pl"
     #Carico il file da consultare
     prolog.consult(FOLDER_PATH+"Apprendimento_NBA/"+FILE_DA_CONSULTARE)
     #Costruisco la query ricavandomi il tier
