@@ -66,7 +66,7 @@ def scegli_tier(val, ranges):
     for index, elem in enumerate(ranges, start=1):
         if index == len(ranges) and elem[0] <= val <= elem[-1]:
             return f'tier_{index}'
-        elif elem[0] <= val < elem[-1]:
+        elif elem[0] <= val <= elem[-1]:
             return f'tier_{index}'
 
     # Se il valore è troppo basso, restituisci il tier minimo
@@ -171,7 +171,7 @@ def interroga():
 root = tk.Tk()
 root.title("Apprendimento intelligente NBA")
 labels = ["Età", "Altezza", "Peso", "Partite giocate", "Minuti a partita",
-          "Impiego attivo (%)", "Ritmo di gioco", "Possessi a partita",
+          "Impiego attivo (%)", "Ritmo di gioco", "Possessi per stagione",
           "Tiri tentati a partita", "Attacchi al canestro a partita",
           "Miglia percorse a partita", "Velocità media",
           "Tiri in sospensione a partita", "Frequenza di palleggio",
