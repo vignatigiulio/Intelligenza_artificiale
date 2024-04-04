@@ -131,6 +131,7 @@ def interroga():
     prolog = Prolog()
     #Determino i valori inseriti dall'utente
     values = [entry.get() for entry in entry_widgets]
+    values[5] = str(float(values[5]) / 100 )#Normalizzo la percentuale
     #Carico il file da consultare
     prolog.consult(FOLDER_PATH+"Apprendimento_NBA/"+FILE_DA_CONSULTARE)
     #Costruisco la query ricavandomi il tier
