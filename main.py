@@ -7,7 +7,6 @@ import numpy as np
 import pandas as pd
 import os
 
-FOLDER_PATH = os.getcwd()+'/'
 FILE_DA_CONSULTARE = "tree_induction_entropia.pl"
 APPRENDIMENTO = False
 
@@ -84,14 +83,14 @@ def scegli_tier(val, ranges):
 
 
 def get_tier_for_value(attributo, num, value):
-    data = pd.read_csv(FOLDER_PATH+"dataset_clean.csv")
+    data = pd.read_csv(os.getcwd()+"/dataset_clean.csv")
     attr_vett = data[attributo].tolist()
     ranges = percentile(attr_vett, num)
     tier = scegli_tier(value, ranges)
     return tier
 
 def imposta_range(attributo, num):
-    data = pd.read_csv(FOLDER_PATH+"dataset_clean.csv")
+    data = pd.read_csv(os.getcwd()+"/dataset_clean.csv")
     attr_vett = data[attributo].tolist()
     ranges = percentile(attr_vett, num)
 
@@ -134,44 +133,42 @@ def interroga():
     values = [entry.get() for entry in entry_widgets]
     if values[5] != '': values[5] = str(float(values[5]) / 100 )#Normalizzo la percentuale
     #Carico il file da consultare
-    prolog.consult(FOLDER_PATH+"Apprendimento_NBA/"+FILE_DA_CONSULTARE)
+    prolog.consult(os.getcwd()+"/Apprendimento_NBA/"+FILE_DA_CONSULTARE)
     #Costruisco la query ricavandomi il tier
     query = "["
     for chiave, user_input in zip(attributi_dict.keys(), values):
         if len(user_input) == 0: user_input = 0
         tier_result = get_tier_for_value(chiave, attributi_dict[chiave], float(user_input))
-        print(f"Il tier corrispondente per "+chiave+" è: "+tier_result)
         query = query+chiave+"="+tier_result+","
     query = query[:-1]
     query=query+"]"
-    print(query)
 
     if not APPRENDIMENTO:
-	    print("Inizio l'apprendimento dei sani")
-	    tempo_inizio=time.time()
-	    answer = prolog.query("lancia_apprendi(sano).")
-	    print(format_result(answer))
-	    tempo_fine=time.time()
-	    tempo_totale = tempo_fine - tempo_inizio
-	    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+        print("Inizio l'apprendimento dei sani")
+        tempo_inizio=time.time()
+        answer = prolog.query("lancia_apprendi(sano).")
+        print(format_result(answer))
+        tempo_fine=time.time()
+        tempo_totale = tempo_fine - tempo_inizio
+        print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
 	    
-	    print("Inizio l'apprendimento degli infortunati")
-	    tempo_inizio = time.time()
-	    answer = prolog.query("lancia_apprendi(infortunato).")
-	    print(format_result(answer))
-	    tempo_fine = time.time()
-	    tempo_totale = tempo_fine - tempo_inizio
-	    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+        print("Inizio l'apprendimento degli infortunati")
+        tempo_inizio = time.time()
+        answer = prolog.query("lancia_apprendi(infortunato).")
+        print(format_result(answer))
+        tempo_fine = time.time()
+        tempo_totale = tempo_fine - tempo_inizio
+        print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
 	    
-	    print("Lancio l'induzione dell'albero.")
-	    prolog.consult(FOLDER_PATH+"Apprendimento_NBA/"+FILE_DA_CONSULTARE)
-	    tempo_inizio=time.time()
-	    answer = prolog.query("lancia_induzione(Albero).")
-	    matrice = format_result(answer)
-	    tempo_fine=time.time()
-	    tempo_totale = tempo_fine - tempo_inizio
-	    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
-	    APPRENDIMENTO = True
+        print("Lancio l'induzione dell'albero.")
+        prolog.consult(os.getcwd()+"/Apprendimento_NBA/"+FILE_DA_CONSULTARE)
+        tempo_inizio=time.time()
+        answer = prolog.query("lancia_induzione(Albero).")
+        matrice = format_result(answer)
+        tempo_fine=time.time()
+        tempo_totale = tempo_fine - tempo_inizio
+        print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+        APPRENDIMENTO = True
 
     print("Interrogo il programma")
     tempo_inizio = time.time()
@@ -244,5 +241,6 @@ combobox = ttk.Combobox(root, values=["Entropia", "Gini"])
 combobox.current(0)
 combobox.bind("<<ComboboxSelected>>", on_combobox_change)
 combobox.grid(column=0, padx=5, pady=5, sticky="w")
-
+icona = tk.PhotoImage(file='icon.png')
+root.iconphoto(True, icona)
 root.mainloop()

@@ -16,9 +16,9 @@
 % visualizzare le prestazioni dell'albero indotto.
 
 % Cambiare percorso con quello della propria workspace
-file_output('/home/giulio/Downloads/Intelligenza_artificiale-main/Apprendimento_NBA/file_output.txt').
+file_output('/home/giulio/Documents/Intelligenza_artificiale/Apprendimento_NBA/file_output.txt').
 
-file_albero('/home/giulio/Downloads/Intelligenza_artificiale-main/Apprendimento_NBA/albero.pl').
+file_albero('/home/giulio/Documents/Intelligenza_artificiale/Apprendimento_NBA/albero.pl').
 % Predicato per lanciare l'apprendimento
 lancia_apprendi(Classe) :-
     file_output(NomeFile),
