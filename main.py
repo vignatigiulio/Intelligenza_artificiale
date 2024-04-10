@@ -6,22 +6,26 @@ import time
 import numpy as np
 import pandas as pd
 import os
-FOLDER_PATH = "/home/giulio/Documents/Intelligenza_artificiale/"
+
+FOLDER_PATH = os.getcwd()+'/'
 FILE_DA_CONSULTARE = "tree_induction_entropia.pl"
+APPRENDIMENTO = False
+
 def cambiaPercorso(nome_file):
     with open(os.getcwd() + '/Apprendimento_NBA/' + nome_file, 'r') as file, open(os.getcwd() + '/Apprendimento_NBA/' + nome_file + '.tmp', 'w') as file_temp:
     # Itera ogni riga del file
         for line in file:
-        # Controlla se la riga inizia con 'file_output' e sostituiscila se necessario
             if line.startswith('file_output'):
-                line = "file_output('"+os.getcwd() + "/Apprendimento_NBA/albero.pl').\n"
-        # Scrive la riga nel file temporaneo
+                line = "file_output('"+os.getcwd() + "/Apprendimento_NBA/file_output.txt').\n"
+            elif line.startswith('file_albero'):
+                line = "file_albero('"+os.getcwd() + "/Apprendimento_NBA/albero.pl').\n"
             file_temp.write(line)
 
     os.remove(os.getcwd()+'/Apprendimento_NBA/'+nome_file)  # Rimuove il file originale
     os.rename(os.getcwd()+'/Apprendimento_NBA/'+nome_file + '.tmp', os.getcwd()+'/Apprendimento_NBA/'+nome_file) #Rinomina
 
 def on_combobox_change(event):
+    global FILE_DA_CONSULTARE
     selected_value = combobox.get()
     if selected_value == "Gini": FILE_DA_CONSULTARE = "tree_induction_gini.pl"
     else: FILE_DA_CONSULTARE = "tree_induction_entropia.pl"
@@ -34,8 +38,6 @@ def percentile(array, num):
     max = data.max()
     try:
         val = 100/num
-        print(num)
-        print(val)
         if val % 1 != 0:
             raise(ValueError(f'Non posso dividere i dati in un numero non intero di gruppi'))
     except(ZeroDivisionError, ValueError) as e:
@@ -85,7 +87,6 @@ def get_tier_for_value(attributo, num, value):
     data = pd.read_csv(FOLDER_PATH+"dataset_clean.csv")
     attr_vett = data[attributo].tolist()
     ranges = percentile(attr_vett, num)
-    print(ranges)
     tier = scegli_tier(value, ranges)
     return tier
 
@@ -96,7 +97,6 @@ def imposta_range(attributo, num):
 
     for index, row in data.iterrows():
         tier = scegli_tier(row[attributo], ranges)
-        print(f"{index}: {tier}")
 
 def format_value(value):
     output = ""
@@ -126,12 +126,13 @@ def format_result(result):
 
 
 def interroga():
+    global APPRENDIMENTO
     cambiaPercorso('tree_induction_entropia.pl')
     cambiaPercorso('tree_induction_gini.pl')
     prolog = Prolog()
     #Determino i valori inseriti dall'utente
     values = [entry.get() for entry in entry_widgets]
-    values[5] = str(float(values[5]) / 100 )#Normalizzo la percentuale
+    if values[5] != '': values[5] = str(float(values[5]) / 100 )#Normalizzo la percentuale
     #Carico il file da consultare
     prolog.consult(FOLDER_PATH+"Apprendimento_NBA/"+FILE_DA_CONSULTARE)
     #Costruisco la query ricavandomi il tier
@@ -145,29 +146,51 @@ def interroga():
     query=query+"]"
     print(query)
 
-    print("Inizio l'apprendimento dei sani")
-    tempo_inizio=time.time()
-    answer = prolog.query("lancia_apprendi(sano).")
-    print(format_result(answer))
-    tempo_fine=time.time()
-    tempo_totale = tempo_fine - tempo_inizio
-    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
-
-    print("Inizio l'apprendimento degli infortunati")
-    tempo_inizio = time.time()
-    answer = prolog.query("lancia_apprendi(infortunato).")
-    print(format_result(answer))
-    tempo_fine = time.time()
-    tempo_totale = tempo_fine - tempo_inizio
-    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+    if not APPRENDIMENTO:
+	    print("Inizio l'apprendimento dei sani")
+	    tempo_inizio=time.time()
+	    answer = prolog.query("lancia_apprendi(sano).")
+	    print(format_result(answer))
+	    tempo_fine=time.time()
+	    tempo_totale = tempo_fine - tempo_inizio
+	    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+	    
+	    print("Inizio l'apprendimento degli infortunati")
+	    tempo_inizio = time.time()
+	    answer = prolog.query("lancia_apprendi(infortunato).")
+	    print(format_result(answer))
+	    tempo_fine = time.time()
+	    tempo_totale = tempo_fine - tempo_inizio
+	    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+	    
+	    print("Lancio l'induzione dell'albero.")
+	    prolog.consult(FOLDER_PATH+"Apprendimento_NBA/"+FILE_DA_CONSULTARE)
+	    tempo_inizio=time.time()
+	    answer = prolog.query("lancia_induzione(Albero).")
+	    matrice = format_result(answer)
+	    tempo_fine=time.time()
+	    tempo_totale = tempo_fine - tempo_inizio
+	    print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+	    APPRENDIMENTO = True
 
     print("Interrogo il programma")
     tempo_inizio = time.time()
     answer = prolog.query(("classifica_oggetto(" + query + ", Classe)."))
-    print(format_result(answer))
+    risposta = format_result(answer).split(';')
+    print(risposta[0])
     tempo_fine = time.time()
     tempo_totale = tempo_fine - tempo_inizio
     print(f"Tempo totale di esecuzione: {tempo_totale} secondi")
+
+def potatura():
+    cmdpotatura = Prolog()
+    cmdpotatura.consult(os.getcwd()+"/Apprendimento_NBA/potatura.pl")
+    if os.path.exists(os.getcwd()+"/Apprendimento_NBA/albero.pl"):
+        answer = cmdpotatura.query("set_prolog_stack(global, limit(3*10**9)).")
+        print(format_result(answer))
+        answer = cmdpotatura.query("lancia(MigliorAlbero, Punteggio).")
+        print(format_result(answer))
+    else: print("Albero mancante: eseguire prima una query.")
 
 root = tk.Tk()
 root.title("Apprendimento intelligente NBA")
@@ -211,6 +234,9 @@ for i, label_text in enumerate(labels):
 
 button = tk.Button(root, text="Costruisci la query", command=interroga, font=("Arial", 12))
 button.grid(row=len(labels), column=1, pady=10)
+
+button2 = tk.Button(root, text="Potatura", command=potatura, font=("Arial", 12))
+button2.grid(row=len(labels)+1, column=1, pady=10)
 
 label=tk.Label(root, text="Metodo di induzione:", font=("Arial",12))
 label.grid(padx=5, pady=5, sticky="w")

@@ -31,7 +31,9 @@ lancia(MigliorAlbero, Punteggio) :-
     inverti(ListaFinale, ListaPotatura,[]),
     lancia_potatura(Albero, ListaPotatura, MigliorAlbero, 100,Punteggio,Length),
     assert(alb(MigliorAlbero)),
-    stampa_matrice_di_confusione(MigliorAlbero).
+    stampa_matrice_di_confusione(MigliorAlbero),
+    halt.
+    
 
 % inverte una lista
 inverti([],Z,Z).

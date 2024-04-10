@@ -16,9 +16,9 @@
 % visualizzare le prestazioni dell'albero indotto.
 
 % Cambiare percorso con quello della propria workspace
-file_output('/home/giulio/Documents/Intelligenza_artificiale/Apprendimento_NBA/albero.pl').
+file_output('/home/giulio/Downloads/Intelligenza_artificiale-main/Apprendimento_NBA/file_output.txt').
 
-
+file_albero('/home/giulio/Downloads/Intelligenza_artificiale-main/Apprendimento_NBA/albero.pl').
 % Predicato per lanciare l'apprendimento
 lancia_apprendi(Classe) :-
     file_output(NomeFile),
@@ -35,13 +35,14 @@ classifica_oggetto(Oggetto,Classe) :-
 % Predicato per lanciare l'induzione dell'albero di decisione con il
 % criterio di Gini
 lancia_induzione(Albero) :-
-    file_output(NomeFile),
+    file_albero(NomeFile),
     induce_albero(Albero),
     tell(NomeFile),
     write(Albero),
     write('.'),
     told,
-    assert(alb(Albero)).
+    assert(alb(Albero)),
+    stampa_matrice_di_confusione.
 
 apprendi(Classe) :-
     findall(e(C,O),e(C,O), Esempi),      % raccoglie  gli Esempi
@@ -290,7 +291,8 @@ stampa_matrice_di_confusione :-
 	write('Falsi sani '), write(FN), write('   Veri infortuni  '), writeln(VP),
 	write('Accuratezza: '), writeln(A),
 	write('Errore: '), writeln(E),
-        write('Precisione: '), writeln(P).
+        write('Precisione: '), writeln(P),
+        !.
 
 valuta(_,[],VN,VN,VP,VP,FN,FN,FP,FP,NC,NC).            % testset vuoto -> valutazioni finali
 valuta(Albero,[sano/Oggetto|Coda],VN,VNA,VP,VPA,FN,FNA,FP,FPA,NC,NCA) :-
