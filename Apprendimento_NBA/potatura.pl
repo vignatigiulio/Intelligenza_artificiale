@@ -95,7 +95,7 @@ rimuovi_valore([Valore|_], SubAlb) :-
     arg(2, Valore, Arg1),
     SubAlb = Arg1.
 
-% Predicato ausiliario che controlla se Valore è una lista, in caso
+% Predicato ausiliario che controlla se Valore ï¿½ una lista, in caso
 % contrario lo converte in una lista
 controlla_se_lista(Valore, NuovoValore) :-
     \+is_list(Valore) -> NuovoValore = [Valore] ;
@@ -195,7 +195,7 @@ stampa_matrice_di_confusione([Albero|_]) :-
         arrotonda(P, Precisione),
 	write('Test effettuati :'),  writeln(N),
 	write('Test non classificati :'),  writeln(NC),
-	write('Veri sani  '), write(VN), write('   Falsi ifortuni '), writeln(FP),
+	write('Veri sani  '), write(VN), write('   Falsi infortuni '), writeln(FP),
 	write('Falsi sani '), write(FN), write('   Veri infortuni  '), writeln(VP),
 	write('Accuratezza: '), writeln(Accuratezza),
 	write('Errore: '), writeln(Errore),
